@@ -8,6 +8,7 @@ import com.sky.service.SetmealService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class setmealController {
      * @return
      */
     @PostMapping
+    @CacheEvict(cacheNames = "setmealCache",key = "#setmealDTO.categoryId")
     public Result save(@RequestBody SetmealDTO setmealDTO) {
         log.info("新增套餐，{}", setmealDTO);
         setmealService.save(setmealDTO);
@@ -39,6 +41,7 @@ public class setmealController {
      * @return
      */
     @GetMapping("/page")
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result<PageResult> pageQuery(SetmealPageQueryDTO SetmealPageQueryDTO) {
         log.info("套餐查询，{}", SetmealPageQueryDTO);
         PageResult pageResult = setmealService.pageQuery(SetmealPageQueryDTO);
@@ -63,6 +66,7 @@ public class setmealController {
      * @return
      */
     @PutMapping
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result updateSetmeals(@RequestBody SetmealDTO setmealDTO) {
         log.info("修改菜品信息，{}",setmealDTO);
         setmealService.update(setmealDTO);
@@ -87,6 +91,7 @@ public class setmealController {
      * @return
      */
     @PostMapping("/status/{status}")
+    @CacheEvict(cacheNames = "setmealCache", allEntries = true)
     public Result startOrStop(@PathVariable Integer status, Long id){
         setmealService.startOrStop(status,id);
         return Result.success();
